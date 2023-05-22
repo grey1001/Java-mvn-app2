@@ -22,7 +22,7 @@ pipeline {
             
             steps {
                 script {
-                    def imageName = 'greyabiwon/java-mvn-app:v1.0'
+                    def imageName = 'greyabiwon/java-mvn-app:v2.0'
                     
                     docker.build(imageName, "-f Dockerfile .")
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-login') {
@@ -40,12 +40,12 @@ pipeline {
             steps {
                 script {
                     def containerName = 'java-web-app'
-                    def imageName = 'greyabiwon/java-mvn-app:v1.0'
+                    def imageName = 'greyabiwon/java-mvn-app:v2.0'
                     
                     sh "docker pull $imageName"
                     sh "docker stop $containerName || true"
                     sh "docker rm $containerName || true"
-                    sh "docker run -d -p 8384:8080 --name $containerName $imageName"
+                    sh "docker run -d -p 8338:8080 --name $containerName $imageName"
                 }
             }
         }
