@@ -24,7 +24,7 @@ pipeline {
                 script {
                     def imageName = 'greyabiwon/java-mvn-app:latest'
                     
-                    docker.build(imageName, '-f Dockerfile .')
+                    docker.build(imageName, "-f Dockerfile .")
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-login') {
                         docker.image(imageName).push()
                     }
@@ -40,7 +40,7 @@ pipeline {
             steps {
                 script {
                     def containerName = 'java-web-app'
-                    def imageName = 'greyabiwon/java-web-app:latest'
+                    def imageName = 'greyabiwon/java-mvn-app:latest'
                     
                     sh "docker pull $imageName"
                     sh "docker stop $containerName || true"
