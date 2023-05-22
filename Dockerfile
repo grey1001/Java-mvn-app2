@@ -1,3 +1,3 @@
 FROM tomcat:latest
-WORKDIR /home/agent/jenkins/workspace/java-mvn-app2/
-COPY target/mvn-hello-world.war /usr/local/tomcat/webapps
+WORKDIR /home/agent
+COPY ./mvn-hello-world.war /usr/local/tomcat/webapps
