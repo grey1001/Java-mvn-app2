@@ -8,21 +8,7 @@ pipeline {
         dockerTool 'mydocker' // Name of the Docker installation configured in Jenkins
     }
     
-    stages {
-        stage('Login to Docker Hub') {
-            agent {
-                label 'agent'
-            }
-            
-            steps {
-                script {
-                    withDockerRegistry([credentialsId: 'docker-login', url: 'https://registry.hub.docker.com']) {
-                        sh 'docker login -u <username> -p <password>'
-                    }
-                }
-            }
-        }
-        
+    
         stage('Build') {
             steps {
                 sh 'mvn clean package'
