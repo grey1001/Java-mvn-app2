@@ -10,7 +10,7 @@ pipeline {
         stage('SCM Checkout') {
             steps {
                 echo 'Checkout Src from github repo'
-                git url: 'https://github.com/grey1001/Java-mvn-app2.git'
+                git 'https://github.com/grey1001/Java-mvn-app2.git'
             }
         }
         stage('Maven Build') {
@@ -23,31 +23,11 @@ pipeline {
         stage('Deploy to QA Server') {
             agent { label 'qa_server' }
             steps {
-                echo 'Copy artifact to QA Server'
-                sshPublisher(publishers: [
-                    sshPublisherDesc(
-                        configName: 'QA_Server',
-                        transfers: [
-                            sshTransfer(
-                                cleanRemote: false,
-                                excludes: '',
-                                execCommand: '',
-                                execTimeout: 120000,
-                                flatten: false,
-                                makeEmptyDirs: false,
-                                noDefaultExcludes: false,
-                                patternSeparator: '[, ]+',
-                                remoteDirectory: '.',
-                                remoteDirectorySDF: false,
-                                removePrefix: 'target/',
-                                sourceFiles: 'target/mvn-hello-world.war'
-                            )
-                        ],
-                        usePromotionTimestamp: false,
-                        useWorkspaceInPromotion: false,
-                        verbose: false
-                    )
-                ])
+                echo 'Checkout Src from github repo'
+                git 'https://github.com/grey1001/Java-mvn-app2.git'
+                script {
+                    sh "scp -o StrictHostKeyChecking=no -r target/mvn-hello-world.war qa_server@172.31.3.151:/home/qa_server"
+                }
             }
         }
     }
