@@ -11,7 +11,7 @@ pipeline {
     stages {
         stage('Login to Docker Hub') {
             agent {
-                label 'qa_server'
+                label 'agent'
             }
             
             steps {
@@ -31,7 +31,7 @@ pipeline {
         
         stage('Build Docker Image') {
             agent {
-                label 'qa_server'
+                label 'agent'
             }
             
             steps {
@@ -48,7 +48,7 @@ pipeline {
         
         stage('Deploy to Container') {
             agent {
-                label 'qa_server'
+                label 'agent'
             }
             
             steps {
