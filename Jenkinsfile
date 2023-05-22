@@ -26,7 +26,7 @@ pipeline {
                 echo 'Checkout Src from github repo'
                 git 'https://github.com/grey1001/Java-mvn-app2.git'
                 script {
-                    sh "scp -o StrictHostKeyChecking=no -r target/mvn-hello-world.war qa_server@172.31.3.151:/home/qa_server"
+                    sh "scp -o StrictHostKeyChecking=no -r agent@172.31.6.28:target/mvn-hello-world.war qa_server@172.31.3.151:/home/qa_server"
                 }
             }
         }
