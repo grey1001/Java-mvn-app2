@@ -8,7 +8,7 @@ pipeline {
         dockerTool 'mydocker' // Name of the Docker installation configured in Jenkins
     }
     
-    
+    stages {
         stage('Build') {
             steps {
                 sh 'mvn clean package'
