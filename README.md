@@ -8,3 +8,4 @@ Java Hello World web application created using maven-archetype-webapp
 * maven
 * tomcat
 
+This jenkinsfile initially has a final step which copies the artifact to a qa_server
