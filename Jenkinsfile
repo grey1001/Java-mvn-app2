@@ -16,7 +16,7 @@ pipeline {
             
             steps {
                 script {
-                    withDockerRegistry([credentialsId: '32b88c11-19dc-42d7-890c-05a4d8d3f1b5', url: 'https://registry.hub.docker.com']) {
+                    withDockerRegistry([credentialsId: 'docker-login', url: 'https://registry.hub.docker.com']) {
                         sh 'docker login -u <username> -p <password>'
                     }
                 }
@@ -31,7 +31,7 @@ pipeline {
         
         stage('Build Docker Image') {
             agent {
-                label 'docker_agent'
+                label 'qa_server'
             }
             
             steps {
@@ -39,7 +39,7 @@ pipeline {
                     def imageName = 'greyabiwon/java-mvn-app:latest'
                     
                     docker.build(imageName, '-f Dockerfile .')
-                    docker.withRegistry('https://registry.hub.docker.com', '32b88c11-19dc-42d7-890c-05a4d8d3f1b5') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'docker-login') {
                         docker.image(imageName).push()
                     }
                 }
@@ -48,7 +48,7 @@ pipeline {
         
         stage('Deploy to Container') {
             agent {
-                label 'deployment_agent'
+                label 'qa_server'
             }
             
             steps {
