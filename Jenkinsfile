@@ -9,15 +9,29 @@ pipeline {
     }
     
     stages {
+        stage('Login to Docker Hub') {
+            agent {
+                label 'qa_server'
+            }
+            
+            steps {
+                script {
+                    withDockerRegistry([credentialsId: '32b88c11-19dc-42d7-890c-05a4d8d3f1b5', url: 'https://registry.hub.docker.com']) {
+                        sh 'docker login -u <username> -p <password>'
+                    }
+                }
+            }
+        }
+        
         stage('Build') {
             steps {
                 sh 'mvn clean package'
             }
         }
-         
+        
         stage('Build Docker Image') {
             agent {
-                label 'qa_server'
+                label 'docker_agent'
             }
             
             steps {
@@ -34,7 +48,7 @@ pipeline {
         
         stage('Deploy to Container') {
             agent {
-                label 'qa_server'
+                label 'deployment_agent'
             }
             
             steps {
