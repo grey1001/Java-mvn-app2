@@ -10,7 +10,7 @@ pipeline {
         stage('SCM Checkout') {
             steps {
                 echo 'Checkout Src from github repo'
-		git 'https://github.com/grey1001/Java-mvn-app2.git'
+                git url: 'https://github.com/grey1001/Java-mvn-app2.git'
             }
         }
         stage('Maven Build') {
@@ -21,15 +21,34 @@ pipeline {
             }
         }
         stage('Deploy to QA Server') {
-	   agent { label 'qa_server' }
-	     steps {
-                 echo 'Checkout Src from github repo'
-		 git 'https://github.com/grey1001/Java-mvn-app2.git'
-             steps {
-		script {
-		sshPublisher(publishers: [sshPublisherDesc(configName: 'QA_Server', transfers: [sshTransfer(cleanRemote: false, excludes: '', execCommand: '', execTimeout: 120000, flatten: false, makeEmptyDirs: false, noDefaultExcludes: false, patternSeparator: '[, ]+', remoteDirectory: '.', remoteDirectorySDF: false, removePrefix: 'target/', sourceFiles: 'target/mvn-hello-world.war')], usePromotionTimestamp: false, useWorkspaceInPromotion: false, verbose: false)])
-		}
+            agent { label 'qa_server' }
+            steps {
+                echo 'Copy artifact to QA Server'
+                sshPublisher(publishers: [
+                    sshPublisherDesc(
+                        configName: 'QA_Server',
+                        transfers: [
+                            sshTransfer(
+                                cleanRemote: false,
+                                excludes: '',
+                                execCommand: '',
+                                execTimeout: 120000,
+                                flatten: false,
+                                makeEmptyDirs: false,
+                                noDefaultExcludes: false,
+                                patternSeparator: '[, ]+',
+                                remoteDirectory: '.',
+                                remoteDirectorySDF: false,
+                                removePrefix: 'target/',
+                                sourceFiles: 'target/mvn-hello-world.war'
+                            )
+                        ],
+                        usePromotionTimestamp: false,
+                        useWorkspaceInPromotion: false,
+                        verbose: false
+                    )
+                ])
+            }
         }
-	}
     }
 }
