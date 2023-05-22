@@ -17,12 +17,12 @@ pipeline {
         
         stage('Build Docker Image') {
             agent {
-                label 'agent'
+                label 'qa_server'
             }
             
             steps {
                 script {
-                    def imageName = 'greyabiwon/java-mvn-app:v3.0'
+                    def imageName = 'greyabiwon/java-mvn-app:v4.0'
                     
                     docker.build(imageName, "-f Dockerfile .")
                     docker.withRegistry('https://registry.hub.docker.com', 'docker-login') {
@@ -34,18 +34,18 @@ pipeline {
         
         stage('Deploy to Container') {
             agent {
-                label 'agent'
+                label 'qa_server'
             }
             
             steps {
                 script {
                     def containerName = 'java-web-app'
-                    def imageName = 'greyabiwon/java-mvn-app:v3.0'
+                    def imageName = 'greyabiwon/java-mvn-app:v4.0'
                     
                     sh "docker pull $imageName"
                     sh "docker stop $containerName || true"
                     sh "docker rm $containerName || true"
-                    sh "docker run -d -p 8338:8080 --name $containerName $imageName"
+                    sh "docker run -d -p 8538:8080 --name $containerName $imageName"
                 }
             }
         }
