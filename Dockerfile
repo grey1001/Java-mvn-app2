@@ -16,14 +16,14 @@ COPY src ./src
 # Build the application using Maven
 RUN mvn package -DskipTests
 
-# Use an appropriate NGINX base image
+# Use an appropriate Tomcat base image
 FROM tomcat:latest
 
 # Copy the built application artifact from the previous stage to the NGINX container
 COPY --from=build /app/target/mvn-hello-world.war /usr/share/local/webapps
 
-# Expose the default NGINX port (80)
+# Expose the default Tomcat port (8080)
 EXPOSE 8080
 
 # Start NGINX when the container starts
-CMD ["catalina.sh" "run"]
+CMD ["catalina.sh", "run"]
