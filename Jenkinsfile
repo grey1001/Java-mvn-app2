@@ -1,32 +1,51 @@
 pipeline {
-    agent { label 'agent' }
-
-    tools {
-        // Install the Maven version configured as "M3" and add it to the path.
-        maven "mymaven"
+    agent {
+        label 'agent'
     }
-
+    
+    tools {
+        maven 'mymaven'
+        dockerTool 'mydocker' // Name of the Docker installation configured in Jenkins
+    }
+    
     stages {
-        stage('SCM Checkout') {
+        stage('Build') {
             steps {
-                echo 'Checkout Src from github repo'
-                git 'https://github.com/grey1001/Java-mvn-app2.git'
+                sh 'mvn clean package'
             }
         }
-        stage('Maven Build') {
-            steps {
-                echo 'Perform Maven Build'
-                // Run Maven on a Unix agent.
-                sh "mvn -Dmaven.test.failure.ignore=true clean package"
+         
+        stage('Build Docker Image') {
+            agent {
+                label 'qa_server'
             }
-        }
-        stage('Deploy to QA Server') {
-            agent { label 'qa_server' }
+            
             steps {
-                echo 'Checkout Src from github repo'
-                git 'https://github.com/grey1001/Java-mvn-app2.git'
                 script {
-                    sh "scp -o StrictHostKeyChecking=no /home/agent/jenkins/workspace/java-mvn-app2/target/mvn-hello-world.war qa_server@172.31.3.151:/home/qa_server/workspace/java-mvn-app2"
+                    def imageName = 'greyabiwon/java-mvn-app:latest'
+                    
+                    docker.build(imageName, '-f Dockerfile .')
+                    docker.withRegistry('https://registry.hub.docker.com', '32b88c11-19dc-42d7-890c-05a4d8d3f1b5') {
+                        docker.image(imageName).push()
+                    }
+                }
+            }
+        }
+        
+        stage('Deploy to Container') {
+            agent {
+                label 'qa_server'
+            }
+            
+            steps {
+                script {
+                    def containerName = 'java-web-app'
+                    def imageName = 'greyabiwon/java-web-app:latest'
+                    
+                    sh "docker pull $imageName"
+                    sh "docker stop $containerName || true"
+                    sh "docker rm $containerName || true"
+                    sh "docker run -d -p 8383:8080 --name $containerName $imageName"
                 }
             }
         }
