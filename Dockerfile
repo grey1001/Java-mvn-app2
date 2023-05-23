@@ -1,2 +1,3 @@
 FROM tomcat:latest
-COPY *.war /usr/local/tomcat/webapps
+WORKDIR /home/qa_server/workspace/java-mvn-app2
+COPY mvn-hello-world.war /usr/local/tomcat/webapps
