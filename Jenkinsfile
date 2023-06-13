@@ -1,6 +1,6 @@
 pipeline {
     agent {
-        label 'agent'
+        label 'node1'
     }
     
     tools {
@@ -17,7 +17,7 @@ pipeline {
         
         stage('Build Docker Image') {
             agent {
-                label 'qa_server'
+                label 'node2'
             }
             
             steps {
@@ -34,7 +34,7 @@ pipeline {
         
         stage('Deploy to Container') {
             agent {
-                label 'qa_server'
+                label 'node2'
             }
             
             steps {
