@@ -25,7 +25,7 @@ pipeline {
                     def imageName = 'greyabiwon/java-mvn-app:v8.0'
                     
                     docker.build(imageName, "-f Dockerfile .")
-                    docker.withRegistry('https://registry.hub.docker.com', 'docker_credentials') {
+                    docker.withRegistry('https://registry.hub.docker.com', 'cfdc0135-dee4-4757-b111-f308925ea448') {
                         docker.image(imageName).push()
                     }
                 }
